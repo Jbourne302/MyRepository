@@ -1,54 +1,16 @@
 from typing import Optional
 from random import randint
 
+from models.User import User
+from models.Computer import Computer
+from helpers.utils import is_even
 
 ## globals
-
 CHOICES = { ## this is a dictionary
     "1": "Rock",
     "2": "Paper",
     "3": "Scissors"
 }
-
-''' ------------ INTERFACES ------------ '''
-
-class Player:
-
-    def __init__(self, name: str) -> None:
-        self.wins = 0
-        self.losses = 0
-        self.draws = 0
-        self.name = name
-
-    def won_round(self) -> None:
-        self.wins += 1
-        print(f"{self.name} won this round!\n")
-
-    def lost_round(self) -> None:
-        self.losses += 1
-        print(f"{self.name} lost this round!\n")
-
-    def tied_round(self) -> None:
-        self.draws += 1
-        print(f"This round was a draw!\n")
-
-class Computer(Player):
-
-    def __init__(self, name: str) -> None:
-        super().__init__(name) # initializes parent class (Player)
-
-class User(Player):
-
-    def __init__(self, name: str, total_num_of_rounds: str) -> None:
-        super().__init__(name)
-        self.total_num_of_rounds = int(total_num_of_rounds)
-        self.games_played = 0
-
-    def played_round(self) -> None:
-        self.games_played += 1
-
-def is_even(num: str) -> bool:
-    return int(num)%2 == 0
 
 ''' ------------ VALIDATION FUNCTIONS ------------ '''
 
