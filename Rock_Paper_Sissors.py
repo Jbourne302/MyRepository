@@ -1,81 +1,126 @@
+from typing import Optional
+from random import randint
 
-import random
 
-def Rock_Paper_Sissors_Winner(user_input):
-    
-    # This function will decide the winner of a Rock, Paper, Sissors game
-    
-    # Generate a random number
-    random_number = random.randint(1,300)
-    
-    # Takes the users input as a number, and interprets that as Rock,Paper, or Sissors
-    if user_input == 1:
-        user_choice = "Rock"
-    elif user_input == 2:
-        user_choice = "Paper"
-    else: 
-        user_choice = "Sissors" 
-    
-    # Generate a random number to go up against the user
-    if random_number %3 == 0:
-        computer_choice = "Rock"
-    elif random_number %3 == 1:
-        computer_choice = "Paper"
-    else: 
-        computer_choice = "Sissors"
-        
-    # Return "Win","Lose","Draw" depending on the outcome
-    if ((user_choice == "Rock" and computer_choice == "Sissors") or
-        (user_choice == "Paper" and computer_choice == "Rock") or 
-        (user_choice == "Sissors" and computer_choice == "Paper")):
-        return "Win"
+## globals
+
+CHOICES = { ## this is a dictionary
+    "1": "Rock",
+    "2": "Paper",
+    "3": "Scissors"
+}
+
+''' ------------ INTERFACES ------------ '''
+
+class Player:
+
+    def __init__(self, name: str) -> None:
+        self.wins = 0
+        self.losses = 0
+        self.draws = 0
+        self.name = name
+
+    def won_round(self) -> None:
+        self.wins += 1
+        print(f"{self.name} won this round!\n")
+
+    def lost_round(self) -> None:
+        self.losses += 1
+        print(f"{self.name} lost this round!\n")
+
+    def tied_round(self) -> None:
+        self.draws += 1
+        print(f"This round was a draw!\n")
+
+class Computer(Player):
+
+    def __init__(self, name: str) -> None:
+        super().__init__(name) # initializes parent class (Player)
+
+class User(Player):
+
+    def __init__(self, name: str, total_num_of_rounds: str) -> None:
+        super().__init__(name)
+        self.total_num_of_rounds = int(total_num_of_rounds)
+        self.games_played = 0
+
+    def played_round(self) -> None:
+        self.games_played += 1
+
+def is_even(num: str) -> bool:
+    return int(num)%2 == 0
+
+''' ------------ VALIDATION FUNCTIONS ------------ '''
+
+def get_num_of_games() -> str:
+
+    num_of_games = input("How many games do you want to play?: ")
+
+    num_is_even = is_even(num_of_games)
+    while num_is_even:
+        num_of_games = input("Please enter an odd number: ")
+        num_is_even = is_even(num_of_games)
+
+    return num_of_games
+
+def get_user_choice() -> str:
+
+        user_choice = input("Enter: \n1 for Rock \n2 for Paper \n3 for Scissors\n")
+
+        is_valid = CHOICES.get(user_choice) ## look up the .get method for dictionaries
+        while is_valid is None:
+            user_choice = input("Please enter an integer from 1 to 3: ")
+            is_valid = CHOICES.get(user_choice)
+
+        return user_choice
+
+''' ------------ HELPER FUNCTIONS ------------ '''
+
+def play_round(user_input: str) -> Optional[bool]:
+    '''Decide winner of the RPS round'''
+
+    random_number = str(randint(1,3))
+    computer_choice = CHOICES[random_number]
+
+    user_choice = CHOICES[user_input]
+
+    if ((user_choice == "Rock" and computer_choice == "Scissors") or
+        (user_choice == "Paper" and computer_choice == "Rock") or
+        (user_choice == "Scissors" and computer_choice == "Paper")):
+        return True
     elif (user_choice == computer_choice):
-        return "Draw"
+        return None
     else:
-        return "Lose"
+        return False
 
-#==============================================================================
+''' ------------ MAIN HANDLER ------------ '''
 
-def Rock_Paper_Sissors():
-    
-    # Decide the amound of games the user wants to play the best out of
-    number_of_games = int(input("How many games do you want to play?: "))
-    
-    # The number must be an odd number to detrmine a winner
-    while(number_of_games %2 != 1):
-        number_of_games = int(input("Please enter an odd number: "))
-    
-    # Keep track of required amount of wins needed for game over
-    rounds = int((number_of_games + 1)/2)
-    
-    # Keep track of the rounds the user wins and looses
-    rounds_won = 0
-    rounds_lost = 0
-    rounds_drawn = 0
-    
+def play_game():
+
+    num_of_games = get_num_of_games()
+
+    # initialize players
+    computer = Computer("Computer")
+    user = User("You", num_of_games) ## can ask user for their name if you'd like
+
     # Keep looping until a player wins enough rounds
-    while rounds_won != rounds and rounds_lost != rounds:
-        
-        # Take the users choice of Rock, Paper, Sissors in the form of 1,2,3 respeectivley
-        users_choice = int(input("Enter: \n1 for Rock \n2 for Paper \n3 for Sissors\n"))
-        
-        # Make sure the user enters an eacceptable input
-        while(users_choice != 1 and users_choice != 2 and users_choice != 3):
-            users_choice = int(input("Please enter an integer from 1 to 3: "))
-            
-        # Returns 1 if the user wins a round and 0 otherwise
-        if Rock_Paper_Sissors_Winner(users_choice) == "Win":
-            print("You won this round")
-            rounds_won += 1
-        elif Rock_Paper_Sissors_Winner(users_choice) == "Lose":
-            print("You lost this round")
-            rounds_lost += 1
+    while user.games_played < user.total_num_of_rounds:
+        user_choice = get_user_choice()
+
+        has_user_won = play_round(user_choice)
+
+        if has_user_won is True:
+            user.won_round()
+        elif has_user_won is False:
+            computer.won_round()
         else:
-            print("Its a draw")
-            rounds_drawn += 1
-            
-    print("\nRounds played: ",(rounds_won + rounds_lost + rounds_drawn), "\nRounds Won: ",rounds_won, "\nRounds Lost: ",rounds_lost, "\nRounds Drawn: ",rounds_drawn )
-#==============================================================================           
-        
-        
-Rock_Paper_Sissors()
+            user.tied_round()
+
+        user.played_round()
+
+    print(f"\nRounds played: {user.total_num_of_rounds}")
+    print(f"Rounds Won: {user.wins}")
+    print(f"Rounds Lost: {computer.wins}")
+    print(f"Rounds Drawn: {user.draws}")
+
+play_game()
