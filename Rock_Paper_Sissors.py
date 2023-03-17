@@ -1,3 +1,4 @@
+
 import random
 
 def Rock_Paper_Sissors_Winner(user_input):
@@ -16,9 +17,9 @@ def Rock_Paper_Sissors_Winner(user_input):
         user_choice = "Sissors" 
     
     # Generate a random number to go up against the user
-    if 1 <= random_number <= 100:
+    if random_number %3 == 0:
         computer_choice = "Rock"
-    elif 101 <= random_number <= 200:
+    elif random_number %3 == 1:
         computer_choice = "Paper"
     else: 
         computer_choice = "Sissors"
@@ -53,7 +54,7 @@ def Rock_Paper_Sissors():
     rounds_drawn = 0
     
     # Keep looping until a player wins enough rounds
-    while rounds_won != rounds and rounds_lost != rounds and rounds_drawn != number_of_games:
+    while rounds_won != rounds and rounds_lost != rounds:
         
         # Take the users choice of Rock, Paper, Sissors in the form of 1,2,3 respeectivley
         users_choice = int(input("Enter: \n1 for Rock \n2 for Paper \n3 for Sissors\n"))
